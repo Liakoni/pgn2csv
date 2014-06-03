@@ -35,15 +35,17 @@ def initDic(dict):
         dict[key] = ' '
 
 '''sourceFile: the path of source file (pgn)  --- outputDir: output directory for (csv files)'''
-def process_file(sourceFile,  outputDir=default_dir):    
+def process_file(sourceFile,  outputDir=default_dir): 
+    print 'proc file .... ', sourceFile   
     global id
     #Creating the output Directory
     if os.path.exists(outputDir) == False:    #if directory doesn't exist create it
-        os.makedirs(outputDir)                       #also creates intermediate directories
+        os.makedirs(outputDir)                #also creates intermediate directories
     #Opening files
-    sourceFileDirs = sourceFile.split('/')    #in case an absolute path is provided
+    sourceFileDirs = sourceFile.split('/')  #in case an absolute path is provided
     sourceFileName = sourceFileDirs[-1]     #take the last part of the path which is the file's name
-    foutName = outputDir+'/'+sourceFileName[:-3] + "csv"  
+    foutName = os.path.join(outputDir,sourceFileName)  
+    print foutName
     try:
         fin = open(sourceFile, 'r')
         fout = open(foutName,  'w')
@@ -99,7 +101,7 @@ def process_file(sourceFile,  outputDir=default_dir):
         fout.close()
         fin.close()
     except IOError:
-        print "Sth wrong with Input file: ", sourceFile, "or output directory: ", outputDir
+        print "Sth wrong with Input file: ", sourceFile, " or output directory: ", outputDir
         fout.close()
         fin.close()
 
@@ -109,13 +111,17 @@ def process_dir(sourceDir=default_dir, outputDir=default_dir):
     for x in os.listdir(sourceDir):
         if x == "csvFiles":
             continue
-        path = sourceDir + '/' + x
+        path = os.path.join(sourceDir, x)
         if os.path.isdir(path):                  # directory - recursive call
-            folderPaths = path.split('/')   # not the folderName yet ... just splitting the path
+            if '/' in path:
+                folderPaths = path.split('/')   # not the folderName yet ... just splitting the path
+            else:
+                folderPaths = path.split('/')   # not the folderName yet ... just splitting the path
+                
             folderName = str(folderPaths[-1])
             if folderName == "csvFiles":
                 continue
-            outDir = outputDir +'/'+ folderName
+            outDir = os.path.join(outputDir, folderName)
             process_dir(path, outDir    )       #recursive call to the new path but output Directory is kept to outDir
         elif path[-4:] == '.pgn':         #if we find a pgn file then we call the process_file func
             process_file(path, outputDir)
@@ -132,7 +138,7 @@ if __name__ == "__main__":
     
     id = int(args.id)
     if args.file == None:  #no specific file specified
-        outDir = args.outputdir + '/' + 'csvFiles'
+        outDir = os.path.join(args.outputdir, 'csvFiles')
         if os.path.exists(outDir) == False:    #if directory doesn't exist create it
             os.mkdir(outDir)
         process_dir(args.directory,  outDir )       #work with directory

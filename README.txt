@@ -1,5 +1,4 @@
 Converts multiple pgn files to csv structure.
-Currently(v0.6) works only in unix platforms due to ('/') directory trailing slashes. Windows version easy to supply if needed.
 
 Usage : python pgn2csv.py -d <root_directory_where_to_start_looking_for_pgns> -o <output_directory> -i <id_starting_point>
 or    : python pgn2csv.py -f <lonely_pgn_path> -o <output_directory> -i <id_starting_point>
@@ -12,6 +11,10 @@ So the easiest way to execute is to put pgn2csv.py in the top folder( where the 
 
 Since Version 0.6 and later, pgn2csv recursively finds all pgns from -d subfolders
 
+=== CHANGES in v1.5 ===
+
+This should be portable to any directory structure naming (unix's or dos's)
+Fixed foutName bug in process_file
 
 === CHANGES in v1.4 ===
 
